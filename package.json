@@ -1,0 +1,19 @@
+{
+  "name": "devsync-bck",
+  "version": "1.0.0",
+  "description": "kunal kushwah",
+  "main": "index.js",
+  "scripts": {
+   "start": "node src/index.js",
+   "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "node",
+    "s"
+  ],
+  "author": "kunal kushwah",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
