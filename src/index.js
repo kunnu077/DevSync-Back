@@ -48,16 +48,27 @@ app.delete("/user",async(req,res)=>{
 
 // api for update user 
 app.patch("/user", async(req,res)=>{
-  const userId = req.body.userId;
+  const userId = req.params.userId;
   const data = req.body;
+
   try{
-    const user = await User.findByIdAndUpdate({_id: userId}, data);
-    console.log(user);
-    res.status(200).send("User updated successfully");
-  }catch(err){
-    res.status(500).send("Error updating user: " + err.message);
+    const ALLOWED_UPDATES = ["firstName", "lastName", "age", "photoUrl", "about", "skills"];
+    const isUpdateAllowed = Object.keys(data).every((k)=> 
+      ALLOWED_UPDATES.includes(k)
+  );
+  if(!isUpdateAllowed){
+    throw new Error("Invalid updates!");
   }
-})
+  const user = await User.findByIdAndUpdate({_id: userId}, data,{
+    returnDocument: "after",
+    runValidators: true,
+  });
+  console.log(user);
+  res.status(200).send("User updated successfully");
+}catch(err){
+    res.status(500).send("Error updating user: " + err.message);
+}
+});
 
 connectDB()
 .then(()=>{
