@@ -36,7 +36,7 @@ app.get("/user", async(req,res)=>{
 });
 
 //api for delete user
-app.delete("/users",async(req,res)=>{
+app.delete("/user",async(req,res)=>{
   const userId = req.body.userId;
   try{
     const user = await User.findByIdAndDelete(userId);
@@ -45,6 +45,19 @@ app.delete("/users",async(req,res)=>{
     res.status(500).send("Error deleting user: " + err.message);
   }
 });
+
+// api for update user 
+app.patch("/user", async(req,res)=>{
+  const userId = req.body.userId;
+  const data = req.body;
+  try{
+    const user = await User.findByIdAndUpdate({_id: userId}, data);
+    console.log(user);
+    res.status(200).send("User updated successfully");
+  }catch(err){
+    res.status(500).send("Error updating user: " + err.message);
+  }
+})
 
 connectDB()
 .then(()=>{
