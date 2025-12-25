@@ -5,7 +5,7 @@ const User = require('./models/user');
 
 app.use(express.json()); // midldleware to parse JSON bodies
 
-
+// api for signup
 app.post("/signup", async(req, res)=>{
   const user = new User(req.body);
 
@@ -19,6 +19,7 @@ app.post("/signup", async(req, res)=>{
   }
 });
 
+// get api for feed
 app.get("/user", async(req,res)=>{
   const userEmail = req.body.email;
   try{
@@ -31,6 +32,17 @@ app.get("/user", async(req,res)=>{
   }
   catch(err){
     res.status(500).send("Error fetching user: " + err.message);
+  }
+});
+
+//api for delete user
+app.delete("/users",async(req,res)=>{
+  const userId = req.body.userId;
+  try{
+    const user = await User.findByIdAndDelete(userId);
+    res.status(200).send("User deleted successfully");
+  }catch(err){
+    res.status(500).send("Error deleting user: " + err.message);
   }
 });
 
