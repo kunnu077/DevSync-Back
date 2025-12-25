@@ -4,8 +4,8 @@
   "description": "kunal kushwah",
   "main": "index.js",
   "scripts": {
-   "start": "node src/index.js",
-   "dev": "nodemon src/index.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "keywords": [
     "node",
@@ -14,6 +14,7 @@
   "author": "kunal kushwah",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.0.2"
   }
 }
