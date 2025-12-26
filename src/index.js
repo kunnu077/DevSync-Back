@@ -4,8 +4,13 @@ const connectDB = require('./config/database');
 const User = require('./models/user');
 const bcrypt = require('bcrypt');
 const { validateSignUpData } = require('./utils/validation');
+const cookie = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
-app.use(express.json()); // midldleware to parse JSON bodies
+app.use(express.json());
+
+app.use(cookie());
+// midldleware to parse JSON bodies
 
 // api for signu
 app.post("/signup", async(req, res)=>{
@@ -37,6 +42,30 @@ app.post("/signup", async(req, res)=>{
   }
 });
 
+app.get("/profile",async (req, res)=>{
+try{
+  const cookies = req.cookies;
+  
+  const {token} = cookies;
+  if(!token){
+    throw new Error("Invalid token");
+  }
+  const decodedMessage  = await jwt.verify(token, "kunal");
+
+  const {_id} = decodedMessage;
+  console.log("User id from token: ", _id);
+
+  const user = await User.findById(_id);
+  if(!user){
+    throw new Error("User not found");
+  }
+  res.status(200).json({user});
+}catch(err){
+  res.status(401).send("Unauthorized: " + err.message);
+}
+
+});
+
 
 app.post("/login", async(req, res)=>{
  try{
@@ -48,6 +77,11 @@ app.post("/login", async(req, res)=>{
   }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if(isPasswordValid){
+    // create jwt token
+    const token = await jwt.sign({_id: user._id},"kunal");
+
+    // add the token to cookie
+    res.cookie("token", token);
     res.status(200).send("Login successful");
   } else{
     throw new Error("Invalid email or password");
