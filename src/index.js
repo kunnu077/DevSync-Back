@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const { validateSignUpData } = require('./utils/validation');
 const cookie = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const { userAuth } = require('../middlewares/auth');
 
 app.use(express.json());
 
@@ -42,26 +43,12 @@ app.post("/signup", async(req, res)=>{
   }
 });
 
-app.get("/profile",async (req, res)=>{
+app.get("/profile", userAuth,async (req, res)=>{
 try{
-  const cookies = req.cookies;
-  
-  const {token} = cookies;
-  if(!token){
-    throw new Error("Invalid token");
-  }
-  const decodedMessage  = await jwt.verify(token, "kunal");
-
-  const {_id} = decodedMessage;
-  console.log("User id from token: ", _id);
-
-  const user = await User.findById(_id);
-  if(!user){
-    throw new Error("User not found");
-  }
-  res.status(200).json({user});
+  const user = req.user;
+  res.send(user);
 }catch(err){
-  res.status(401).send("Unauthorized: " + err.message);
+  res.status(500).send("Error fetching profile: " + err.message);
 }
 
 });
