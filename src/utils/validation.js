@@ -13,7 +13,7 @@ const validateSignUpData = (req) => {
         throw new Error("Password sai dal bhadu");
     }
 };
-
+// USER
 const validateEditProfileData = (req) => {
     const allowedFields = [
         'firstName',
